@@ -23,7 +23,7 @@ async function saveHackerNewsArticles() {
 
   // Check if we have at least 100 articles
   if (timestamps.length < 100) {
-    console.log('Only found ${timestamps.length} articles.');
+    console.log(`Only found ${timestamps.length} articles.`);
     // await browser.close();
     return;
   }
