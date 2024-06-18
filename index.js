@@ -29,7 +29,7 @@ async function saveHackerNewsArticles() {
   }
 
   // We only need the first 100 timestamps
-  const fire100Timestamps = timestamps.slice(0, 100);
+  const first100Timestamps = timestamps.slice(0, 100);
 
   //Function to compare if timestamps are sorted in descending order
   const isSortedDescending = (arr) => {
