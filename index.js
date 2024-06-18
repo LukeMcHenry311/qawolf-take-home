@@ -20,15 +20,14 @@ async function saveHackerNewsArticles() {
     }
   }
 
-  // Loop to click the "More" button until we have at least 100 articles
   let timestamps = [];
-  let attempts = 0;
 
-  while (timestamps.length < 100 && attempts < 10) { // Limit to 10 attempts
+  // Loop to load articles until we have at least 100
+  while (timestamps.length < 100) {
     await loadMoreArticles();
 
-    // Scrape timestamps from the articles
-    timestamps = await page.evaluate(() => {
+    // Scrape timestamps from the current articles on the page
+    const newTimestamps = await page.evaluate(() => {
       const articles = Array.from(document.querySelectorAll('.athing'));
       return articles.map(article => {
         const ageElement = article.nextElementSibling.querySelector('.age');
@@ -36,14 +35,10 @@ async function saveHackerNewsArticles() {
       }).filter(Boolean); // Filter out any null values
     });
 
-    console.log(`Attempt ${attempts + 1}: Found ${timestamps.length} articles.`);
-    attempts++;
-  }
-
-  // Check if we have at least 100 articles
-  if (timestamps.length < 100) {
-    console.log(`Only found ${timestamps.length} articles after ${attempts} attempts.`);
-    return;
+    // Combine and sort timestamps from all loaded articles
+    timestamps = [...timestamps, ...newTimestamps];
+    timestamps.sort((a, b) => new Date(b) - new Date(a)); // Sort timestamps in descending order
+    timestamps = timestamps.slice(0, 100); // Limit to first 100 timestamps
   }
 
   // We only need the first 100 timestamps
